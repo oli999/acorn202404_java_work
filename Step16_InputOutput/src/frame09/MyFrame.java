@@ -2,10 +2,11 @@ package frame09;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -99,16 +100,44 @@ public class MyFrame extends JFrame{
 				setTitle(fileName);
 				//TextArea 를 보이게 하고 
 				ta.setVisible(true);
+				//문자열을 로딩한다.
 				loadFromFile();
-				
+				//saveItem , saveAsItem 을 활성화 한다 
+				saveItem.setEnabled(true);
+				saveAsItem.setEnabled(true);
 			}
 		});
-		
-	}//생성자 
+		//Save 를 눌렀을때 
+		saveItem.addActionListener((e)->{
+			saveToFile();
+		});
+	}//생성자
+	
 	
 	//선택된 파일로 부터 문자열을 읽어와서 JTextArea 에 출력하는 메소드
 	public void loadFromFile() {
 		
+		FileReader fr=null;
+		BufferedReader br=null;
+		try {
+			//필드에 저장되어 있는 File 객체를 이용해서 FileReader 객체를 생성한다.
+			fr=new FileReader(openedFile);
+			//좀더 편하게 문자열을 읽어들이기 위해 FileReader 객체를 BufferedReader 로 포장한다.
+			br=new BufferedReader(fr);
+			while(true) {
+				String line=br.readLine();
+				if(line == null)break;
+				//JTextArea 에 1줄씩 추가하기
+				ta.append(line+"\r\n");
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if(br!=null)br.close();
+				if(fr!=null)fr.close();
+			}catch(Exception e) {}
+		}
 	}
 	
 	
